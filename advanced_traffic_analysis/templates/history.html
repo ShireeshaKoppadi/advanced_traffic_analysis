@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📊 Detection History - Traffic Detection AI</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1e40af;
+    --secondary: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --dark: #1f2937;
+    --light: #f3f4f6;
+    --border: #e5e7eb;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #1f2937;
+    min-height: 100vh;
+}
+
+.navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.navbar-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-links a {
+    color: var(--dark);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+.nav-links a.active {
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 0.25rem;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.header-section {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+.header-section h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #60a5fa 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+}
+
+.btn-secondary {
+    background: var(--secondary);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.stat-card .number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.table-container {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
+
+.table-container h2 {
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table thead {
+    background: var(--light);
+    border-bottom: 2px solid var(--border);
+}
+
+table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--dark);
+    font-size: 0.9rem;
+}
+
+table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+}
+
+table tr:hover {
+    background: var(--light);
+    transition: background 0.3s;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.badge-image {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-video {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #9ca3af;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state-text {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-subtext {
+    font-size: 0.9rem;
+    color: #d1d5db;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s;
+}
+
+.back-button:hover {
+    gap: 0.75rem;
+    color: var(--primary-dark);
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-brand">
+            📊 Traffic Detection History
+        </div>
+        <div class="nav-links">
+            <a href="/">🏠 Home</a>
+            <a href="/history" class="active">📋 History</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="header-section">
+        <h1>Detection History & Analytics</h1>
+        <p>View all processed videos and images with vehicle detection results</p>
+    </div>
+
+    <div class="controls">
+        <a href="/" class="btn btn-primary">🏠 Back to Detection</a>
+        <a href="/export_csv" class="btn btn-secondary">📥 Export as CSV</a>
+    </div>
+
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+            <h3>Total Files Processed</h3>
+            <div class="number" id="totalProcessed">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>Total Vehicles Detected</h3>
+            <div class="number" id="totalVehicles">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>Total Cars</h3>
+            <div class="number" id="totalCars">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>Total Buses</h3>
+            <div class="number" id="totalBuses">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>Total Trucks</h3>
+            <div class="number" id="totalTrucks">0</div>
+        </div>
+        <div class="stat-card">
+            <h3>Total Motorcycles</h3>
+            <div class="number" id="totalMotorcycles">0</div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <h2>📋 All Detections</h2>
+        
+        {% if detections %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Filename</th>
+                    <th>Type</th>
+                    <th>🚗 Cars</th>
+                    <th>🚌 Buses</th>
+                    <th>🚚 Trucks</th>
+                    <th>🏍️ Motorcycles</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detection in detections %}
+                <tr>
+                    <td>{{ detection.timestamp }}</td>
+                    <td>{{ detection.filename }}</td>
+                    <td>
+                        {% if detection.file_type == 'image' %}
+                        <span class="badge badge-image">📸 Image</span>
+                        {% else %}
+                        <span class="badge badge-video">🎬 Video</span>
+                        {% endif %}
+                    </td>
+                    <td><strong>{{ detection.cars }}</strong></td>
+                    <td><strong>{{ detection.buses }}</strong></td>
+                    <td><strong>{{ detection.trucks }}</strong></td>
+                    <td><strong>{{ detection.motorcycles }}</strong></td>
+                    <td><strong style="color: var(--primary);">{{ detection.total_vehicles }}</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <div class="empty-state-text">No detections yet</div>
+            <div class="empty-state-subtext">Start by uploading an image or video to begin detection</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Load statistics from API
+async function loadStats() {
+    try {
+        const response = await fetch('/stats');
+        const data = await response.json();
+        
+        document.getElementById('totalProcessed').textContent = data.total_processed;
+        document.getElementById('totalVehicles').textContent = data.total_vehicles;
+        document.getElementById('totalCars').textContent = data.total_cars;
+        document.getElementById('totalBuses').textContent = data.total_buses;
+        document.getElementById('totalTrucks').textContent = data.total_trucks;
+        document.getElementById('totalMotorcycles').textContent = data.total_motorcycles;
+    } catch (error) {
+        console.error('Error loading stats:', error);
+    }
+}
+
+// Load stats on page load
+loadStats();
+</script>
+
+</body>
+</html>
